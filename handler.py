@@ -12,12 +12,12 @@ torch_dtype = torch.float16 if device == "cuda" else torch.float32
 
 pipe = StableDiffusionPipeline.from_pretrained(
     "runwayml/stable-diffusion-v1-5",
-    torch_dtype = torch_dtype
+    torch_dtype = torch_dtype,
 )
 
 pipe = pipe.to(device)
 pipe.enable_attention_slicing()
-
+pipe.safety_checker = None 
 # 1. Validate input
 def validate_input(event):
     input_data = event.get("input", {})
@@ -40,7 +40,7 @@ def generate_image(prompt, steps, guidance):
                 image = pipe(
                     prompt,
                     num_inference_steps=steps,
-                    guidance_scale=guidance
+                    guidance_scale=guidance,
                     width=512,
                     height=512
                 ).images[0] # Take first generated image
@@ -48,7 +48,7 @@ def generate_image(prompt, steps, guidance):
             image = pipe(
                 prompt,
                 num_inference_steps=steps,
-                guidance_scale=guidance
+                guidance_scale=guidance,
                 width=512,
                 height=512
             ).images[0]
@@ -68,16 +68,4 @@ def handler(event):
     except Exception as e:
         return {"error": str(e)}
 
-if __name__ == "__main__":
-    # Test local
-    result = handler({
-        "input": {
-            "prompt": "a cyberpunk cat",
-            "steps": 20,
-            "guidance": 7.5
-        }
-    })
-    print(result)
-else:
-    # Modo RunPod
-    runpod.serverless.start({"handler": handler})
+runpod.serverless.start({"handler": handler})
