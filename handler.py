@@ -41,12 +41,16 @@ def generate_image(prompt, steps, guidance):
                     prompt,
                     num_inference_steps=steps,
                     guidance_scale=guidance
+                    width=512,
+                    height=512
                 ).images[0] # Take first generated image
         else:
             image = pipe(
                 prompt,
                 num_inference_steps=steps,
                 guidance_scale=guidance
+                width=512,
+                height=512
             ).images[0]
     return image
 # 3. Encode to base64 and return
