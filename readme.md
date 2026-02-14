@@ -72,8 +72,8 @@ You must provide a HuggingFace token:
 
 ````bash
 HF_TOKEN=your_huggingface_token
+```
 Required to download:
-
 runwayml/stable-diffusion-v1-5
 Deployment
 Build and push your Docker image to Docker Hub.
