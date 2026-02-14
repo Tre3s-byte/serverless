@@ -44,9 +44,6 @@ Stable Diffusion Pipeline
 ▼
 Base64 Image → JSON Response
 
-yaml
-Copy code
-
 The model loads once when the container starts for better performance.
 
 ---
@@ -57,9 +54,6 @@ The model loads once when the container starts for better performance.
 ├── handler.py
 ├── Dockerfile
 └── requirements.txt
-
-yaml
-Copy code
 
 **handler.py**  
 Main serverless entry point. Loads the model globally and processes prompts.
