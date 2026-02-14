@@ -74,60 +74,75 @@ You must provide a HuggingFace token:
 HF_TOKEN=your_huggingface_token
 ```
 
-Required to download:
-runwayml/stable-diffusion-v1-5
-Deployment
-Build and push your Docker image to Docker Hub.
+Required to download: runwayml/stable-diffusion-v1-5
 
-Create a new Serverless Endpoint in RunPod.
+---
 
-Select your Docker image.
+## Deployment
 
-Add HF_TOKEN as environment variable.
+1. Build and push your Docker image to Docker Hub.
+2. Create a new **Serverless Endpoint** in RunPod.
+3. Select your Docker image.
+4. Add `HF_TOKEN` as an environment variable.
+5. Deploy.
 
-Deploy.
+---
 
-Sending a Request
+## Sending a Request
+
 Use the synchronous endpoint:
 
+```bash
 curl -s -X POST https://api.runpod.ai/v2/YOUR_ENDPOINT_ID/runsync \
- -H "Content-Type: application/json" \
- -H "Authorization: YOUR_RUNPOD_API_KEY" \
- -d '{"input":{"prompt":"cyberpunk city"}}' \
+  -H "Content-Type: application/json" \
+  -H "Authorization: YOUR_RUNPOD_API_KEY" \
+  -d '{"input":{"prompt":"cyberpunk city"}}' \
 | jq -r '.output.image_base64' \
 | base64 -d > image.png
+```
+
 This will generate image.png in your current directory.
 
-Important:
+Important
+
 Use /runsync to wait for completion.
+
 Do not use /run unless you implement job polling.
 
-Example Input
-json
+```bash
 {
-"input": {
-"prompt": "a futuristic cyberpunk city",
-"steps": 30,
-"guidance": 7.5
+  "input": {
+    "prompt": "a futuristic cyberpunk city",
+    "steps": 30,
+    "guidance": 7.5
+  }
 }
-}
-Parameters
-Parameter Required Default Description
-prompt Yes — Text description
-steps No 30 Inference steps
-guidance No 7.5 Guidance scale
+```
 
-Response Format
-json
+## Parameters
+
+| Parameter  | Required | Default | Description      |
+| ---------- | -------- | ------- | ---------------- |
+| `prompt`   | Yes      | —       | Text description |
+| `steps`    | No       | 30      | Inference steps  |
+| `guidance` | No       | 7.5     | Guidance scale   |
+
+## Response Format
+
+```bash
 {
-"status": "COMPLETED",
-"output": {
-"image_base64": "..."
+  "status": "COMPLETED",
+  "output": {
+    "image_base64": "..."
+  }
 }
+```
+
 }
 The image must be decoded from base64 to PNG.
 
-Performance Notes
+## Performance Notes
+
 Model loads once per container start.
 
 Uses GPU automatically if available.
@@ -137,4 +152,3 @@ Mixed precision enabled on CUDA.
 Optimized for 512x512 generation.
 
 <p align="center"> Built for clean, minimal serverless inference. </p> ```
-````
