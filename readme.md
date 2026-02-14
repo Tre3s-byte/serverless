@@ -103,7 +103,7 @@ curl -s -X POST https://api.runpod.ai/v2/YOUR_ENDPOINT_ID/runsync \
 
 This will generate image.png in your current directory.
 
-Important
+**Important**
 
 Use /runsync to wait for completion.
 
@@ -138,7 +138,6 @@ Do not use /run unless you implement job polling.
 }
 ```
 
-}
 The image must be decoded from base64 to PNG.
 
 ## Performance Notes
