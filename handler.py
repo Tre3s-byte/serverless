@@ -4,8 +4,10 @@ from diffusers import StableDiffusionPipeline
 import base64
 from io import BytesIO
 import os
+from dotenv import load_dotenv
 
 #Load model globally so it's only loaded once per container
+load_dotenv()
 token = os.getenv("HF_TOKEN")
 MODEL_ID = "runwayml/stable-diffusion-v1-5"
 
