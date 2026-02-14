@@ -74,8 +74,6 @@ You must provide a HuggingFace token:
 HF_TOKEN=your_huggingface_token
 Required to download:
 
-bash
-Copy code
 runwayml/stable-diffusion-v1-5
 Deployment
 Build and push your Docker image to Docker Hub.
@@ -91,8 +89,6 @@ Deploy.
 Sending a Request
 Use the synchronous endpoint:
 
-bash
-Copy code
 curl -s -X POST https://api.runpod.ai/v2/YOUR_ENDPOINT_ID/runsync \
   -H "Content-Type: application/json" \
   -H "Authorization: YOUR_RUNPOD_API_KEY" \
@@ -107,7 +103,6 @@ Do not use /run unless you implement job polling.
 
 Example Input
 json
-Copy code
 {
   "input": {
     "prompt": "a futuristic cyberpunk city",
@@ -123,7 +118,6 @@ guidance	No	7.5	Guidance scale
 
 Response Format
 json
-Copy code
 {
   "status": "COMPLETED",
   "output": {
