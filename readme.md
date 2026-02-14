@@ -70,9 +70,10 @@ Python dependencies.
 
 You must provide a HuggingFace token:
 
-````bash
+```bash
 HF_TOKEN=your_huggingface_token
 ```
+
 Required to download:
 runwayml/stable-diffusion-v1-5
 Deployment
@@ -90,9 +91,9 @@ Sending a Request
 Use the synchronous endpoint:
 
 curl -s -X POST https://api.runpod.ai/v2/YOUR_ENDPOINT_ID/runsync \
-  -H "Content-Type: application/json" \
-  -H "Authorization: YOUR_RUNPOD_API_KEY" \
-  -d '{"input":{"prompt":"cyberpunk city"}}' \
+ -H "Content-Type: application/json" \
+ -H "Authorization: YOUR_RUNPOD_API_KEY" \
+ -d '{"input":{"prompt":"cyberpunk city"}}' \
 | jq -r '.output.image_base64' \
 | base64 -d > image.png
 This will generate image.png in your current directory.
@@ -104,25 +105,25 @@ Do not use /run unless you implement job polling.
 Example Input
 json
 {
-  "input": {
-    "prompt": "a futuristic cyberpunk city",
-    "steps": 30,
-    "guidance": 7.5
-  }
+"input": {
+"prompt": "a futuristic cyberpunk city",
+"steps": 30,
+"guidance": 7.5
+}
 }
 Parameters
-Parameter	Required	Default	Description
-prompt	Yes	—	Text description
-steps	No	30	Inference steps
-guidance	No	7.5	Guidance scale
+Parameter Required Default Description
+prompt Yes — Text description
+steps No 30 Inference steps
+guidance No 7.5 Guidance scale
 
 Response Format
 json
 {
-  "status": "COMPLETED",
-  "output": {
-    "image_base64": "..."
-  }
+"status": "COMPLETED",
+"output": {
+"image_base64": "..."
+}
 }
 The image must be decoded from base64 to PNG.
 
