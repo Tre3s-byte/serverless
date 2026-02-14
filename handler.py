@@ -3,8 +3,10 @@ import torch
 from diffusers import StableDiffusionPipeline
 import base64
 from io import BytesIO
+import os
 
 #Load model globally so it's only loaded once per container
+token = os.getenv("HF_TOKEN")
 MODEL_ID = "runwayml/stable-diffusion-v1-5"
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -13,11 +15,11 @@ torch_dtype = torch.float16 if device == "cuda" else torch.float32
 pipe = StableDiffusionPipeline.from_pretrained(
     "runwayml/stable-diffusion-v1-5",
     torch_dtype = torch_dtype,
+    use_auth_token=token
 )
 
 pipe = pipe.to(device)
 pipe.enable_attention_slicing()
-pipe.safety_checker = None 
 # 1. Validate input
 def validate_input(event):
     input_data = event.get("input", {})
