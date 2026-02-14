@@ -1,109 +1,151 @@
-Stable Diffusion Serverless Worker with RunPod
+<p align="center">
+  <h1 align="center">Stable Diffusion Serverless Worker</h1>
+  <p align="center">
+    RunPod Serverless · Stable Diffusion v1.5 · GPU Ready
+  </p>
+</p>
 
-This project deploys a Stable Diffusion v1.5 image generation worker using RunPod Serverless.
-The worker receives a text prompt via HTTP request and returns a generated image encoded in base64.
+<p align="center">
+  <img src="https://img.shields.io/badge/RunPod-Serverless-purple" />
+  <img src="https://img.shields.io/badge/Model-StableDiffusion_v1.5-blue" />
+  <img src="https://img.shields.io/badge/GPU-CUDA-green" />
+  <img src="https://img.shields.io/badge/License-MIT-lightgrey" />
+</p>
 
-The repository contains only the necessary files:
+---
 
+## Overview
+
+This project deploys a **Stable Diffusion v1.5** image generation worker using **RunPod Serverless**.
+
+The worker:
+
+- Receives a text prompt via HTTP request
+- Generates an image
+- Returns it encoded as base64 inside JSON
+
+No client script is required. Interaction is done directly using `curl`.
+
+---
+
+## Architecture
+
+Client (curl)
+│
+▼
+RunPod Serverless Endpoint
+│
+▼
 handler.py
+│
+▼
+Stable Diffusion Pipeline
+│
+▼
+Base64 Image → JSON Response
 
-Dockerfile
+yaml
+Copy code
 
-requirements.txt
+The model loads once when the container starts for better performance.
 
-No client script is required. You can interact directly using curl.
+---
 
-How It Works
+## Project Structure
 
-The container starts and loads the Stable Diffusion model once.
+.
+├── handler.py
+├── Dockerfile
+└── requirements.txt
 
-RunPod listens for incoming jobs.
+yaml
+Copy code
 
-A request is sent to the endpoint.
+**handler.py**  
+Main serverless entry point. Loads the model globally and processes prompts.
 
-The handler generates the image.
+**Dockerfile**  
+Defines the container environment.
 
-The image is returned as a base64 string inside JSON.
+**requirements.txt**  
+Python dependencies.
 
-The endpoint must be used with /runsync to wait for the job to complete.
+---
 
-Project Structure
-
-handler.py
-Main serverless handler. Loads the model globally and processes incoming prompts.
-
-Dockerfile
-Builds the container image with all dependencies.
-
-requirements.txt
-Python dependencies required for the project.
-
-Environment Variables
+## Environment Variable
 
 You must provide a HuggingFace token:
 
+````bash
 HF_TOKEN=your_huggingface_token
+Required to download:
 
-This is required to download the model:
+bash
+Copy code
 runwayml/stable-diffusion-v1-5
-
-Deploying to RunPod
-
+Deployment
 Build and push your Docker image to Docker Hub.
 
 Create a new Serverless Endpoint in RunPod.
 
-Use your Docker image.
+Select your Docker image.
 
-Set the required environment variable HF_TOKEN.
+Add HF_TOKEN as environment variable.
 
 Deploy.
 
 Sending a Request
-
 Use the synchronous endpoint:
 
-curl -s -X POST https://api.runpod.ai/v2/YOUR_ENDPOINT_ID/runsync
-
--H "Content-Type: application/json"
--H "Authorization: YOUR_RUNPOD_API_KEY"
--d '{"input":{"prompt":"cyberpunk city"}}'
-| jq -r '.output.image_base64'
+bash
+Copy code
+curl -s -X POST https://api.runpod.ai/v2/YOUR_ENDPOINT_ID/runsync \
+  -H "Content-Type: application/json" \
+  -H "Authorization: YOUR_RUNPOD_API_KEY" \
+  -d '{"input":{"prompt":"cyberpunk city"}}' \
+| jq -r '.output.image_base64' \
 | base64 -d > image.png
-
 This will generate image.png in your current directory.
 
-Important: do not use /run unless you plan to manually poll the job status.
+Important:
+Use /runsync to wait for completion.
+Do not use /run unless you implement job polling.
 
 Example Input
-
+json
+Copy code
 {
-"input": {
-"prompt": "a futuristic cyberpunk city",
-"steps": 30,
-"guidance": 7.5
+  "input": {
+    "prompt": "a futuristic cyberpunk city",
+    "steps": 30,
+    "guidance": 7.5
+  }
 }
-}
-
-Parameters:
-
-prompt, required
-steps, optional, default 30
-guidance, optional, default 7.5
+Parameters
+Parameter	Required	Default	Description
+prompt	Yes	—	Text description
+steps	No	30	Inference steps
+guidance	No	7.5	Guidance scale
 
 Response Format
-
+json
+Copy code
 {
-"status": "COMPLETED",
-"output": {
-"image_base64": "..."
+  "status": "COMPLETED",
+  "output": {
+    "image_base64": "..."
+  }
 }
-}
-
 The image must be decoded from base64 to PNG.
 
-Notes
+Performance Notes
+Model loads once per container start.
 
-The model loads once per container start to improve performance.
-GPU is used automatically if available.
-For testing, always use /runsync to avoid handling queue polling manually.
+Uses GPU automatically if available.
+
+Mixed precision enabled on CUDA.
+
+Optimized for 512x512 generation.
+
+<p align="center"> Built for clean, minimal serverless inference. </p> ```
+````
