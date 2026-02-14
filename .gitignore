@@ -1,3 +1,6 @@
 hf-cache
 __pycache__
 .env
+image.png
+output.png
+result.json
