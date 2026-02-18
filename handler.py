@@ -6,17 +6,17 @@ from io import BytesIO
 import os
 from dotenv import load_dotenv
 
-# Enviroment variables
+# Environment variables
 load_dotenv()
 token = os.getenv("HF_TOKEN")
 
 # HF model
 MODEL_ID = "runwayml/stable-diffusion-v1-5"
 
-# Check if there is a GPU, use of CPU if not
+# Check if there is a GPU, use the CPU if not
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
-# float32 for CPU, 16 for GPU (it will using less memory and be a little faster)
+# float32 for CPU, 16 for GPU (it will use less memory and be a little faster)
 torch_dtype = torch.float16 if device == "cuda" else torch.float32
 
 # SD pipeline; the model will be loaded once
